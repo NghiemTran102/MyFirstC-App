@@ -7,3 +7,4 @@ bool isPro = true;
 Console.WriteLine($"Tay vot: {playerName} \n");
 Console.WriteLine($"So tran thang: {matchesWon} \n");
 Console.WriteLine($"Dung vot hang: {racketBrand} \n");
+Console.WriteLine($"Test Git lan 2 \n");
