@@ -7,7 +7,27 @@ using (SqlConnection connection = new SqlConnection(connectionString)) {
     {
         connection.Open();
         Console.WriteLine("Connected Successfully!");
-        string sqlQuery = "SELECT PlayerName, RacketBrand, MatchesWon FROM BadmintonPlayers WHERE MatchesWon > 15";
+        
+        Console.WriteLine("\n--- THEM TAY VOT MOI ---");
+        Console.WriteLine("\nTen tay vot: ");
+        string newName = Console.ReadLine();
+        Console.WriteLine("\nDung vot hang: ");
+        string newBrand = Console.ReadLine();
+        Console.WriteLine("\nSo tran thang: ");
+        int newWins = int.Parse(Console.ReadLine());
+
+        string insertQuery = "INSERT INTO BadmintonPlayers (PlayerName, RacketBrand, MatchesWon) VALUES (@Name, @Brand, @Wins)";
+        using (SqlCommand insertCommand = new SqlCommand(insertQuery, connection))
+        {
+            insertCommand.Parameters.AddWithValue("@Name", newName);
+            insertCommand.Parameters.AddWithValue("@Brand", newBrand);
+            insertCommand.Parameters.AddWithValue("@Wins", newWins);
+
+            int rowAffected = insertCommand.ExecuteNonQuery();
+            Console.WriteLine($"Da them thanh cong {rowAffected} tay vot vao Database!");
+        }
+
+        string sqlQuery = "SELECT PlayerName, RacketBrand, MatchesWon FROM BadmintonPlayers";
 
         using (SqlCommand command = new SqlCommand(sqlQuery, connection))
         {
@@ -32,38 +52,29 @@ using (SqlConnection connection = new SqlConnection(connectionString)) {
 }
 
 
-//// 1. Viết câu lệnh SQL (Y hệt như lúc bạn gõ bên SSMS)
-//string sqlQuery = "SELECT PlayerName, RacketBrand, MatchesWon FROM BadmintonPlayers";
+//Console.WriteLine("\n--- THEM TAY VOT MOI ---");
 
-//// 2. Tạo "xe tải" mang câu lệnh này chạy trên "đường ống" connection
-//using (SqlCommand command = new SqlCommand(sqlQuery, connection))
+//// 1. Nhập thông tin từ bàn phím Console
+//Console.Write("Nhap ten tay vot: ");
+//string newName = Console.ReadLine();
+
+//Console.Write("Nhap hang vot (VD: Yonex, Victor...): ");
+//string newBrand = Console.ReadLine();
+
+//Console.Write("So tran thang: ");
+//int newWins = int.Parse(Console.ReadLine()); // Chuyển chữ gõ từ bàn phím thành số nguyên
+
+//// 2. Chuẩn bị câu lệnh SQL (Dùng @ThamSo để chống Hacker bơm mã độc SQL Injection)
+//string insertQuery = "INSERT INTO BadmintonPlayers (PlayerName, RacketBrand, MatchesWon) VALUES (@Name, @Brand, @Wins)";
+
+//using (SqlCommand insertCommand = new SqlCommand(insertQuery, connection))
 //{
-//    // 3. Thực thi lệnh và nhờ "người bốc vác" đọc kết quả
-//    using (SqlDataReader reader = command.ExecuteReader())
-//    {
-//        Console.WriteLine("\n--- DANH SACH TAY VOT ---");
+//    // 3. Lắp giá trị thật vừa gõ ở trên vào các tham số @
+//    insertCommand.Parameters.AddWithValue("@Name", newName);
+//    insertCommand.Parameters.AddWithValue("@Brand", newBrand);
+//    insertCommand.Parameters.AddWithValue("@Wins", newWins);
 
-//        // 4. Vòng lặp: Cứ mỗi khi còn dòng dữ liệu, thì đọc tiếp
-//        while (reader.Read())
-//        {
-//            // Lấy dữ liệu theo thứ tự cột đã SELECT ở trên (đếm từ số 0)
-//            string name = reader.GetString(0);  // Cột 0: PlayerName
-//            string racket = reader.GetString(1); // Cột 1: RacketBrand
-//            int wins = reader.GetInt32(2);       // Cột 2: MatchesWon (số nguyên)
-
-//            // In ra màn hình bằng cú pháp chuỗi $ siêu xịn
-//            Console.WriteLine($"- Tay vot {name} dung vot {racket}, da thang {wins} tran.");
-//        }
-//    }
+//    // 4. Ra lệnh thực thi việc cất vào kho!
+//    int rowsAffected = insertCommand.ExecuteNonQuery();
+//    Console.WriteLine($"\n=> Da them thanh cong {rowsAffected} tay vot vao Database!");
 //}
-
-//string playerName = "NghiemTran";
-//string racketBrand = "Lining";
-//int matchesWon = 18;
-//double powerScale = 9.5;
-//bool isPro = true;
-
-//Console.WriteLine($"Tay vot: {playerName} \n");
-//Console.WriteLine($"So tran thang: {matchesWon} \n");
-//Console.WriteLine($"Dung vot hang: {racketBrand} \n");
-//Console.WriteLine($"Test Git lan 2 \n");
