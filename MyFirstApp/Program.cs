@@ -19,7 +19,8 @@ using (SqlConnection connection = new SqlConnection(connectionString))
             Console.Write("\n4. Xoa tay vot");
             Console.Write("\n5. Tim kiem tay vot");
             Console.Write("\n6. Top 3 tay vot hien tai");
-            Console.Write("\n7. Thoat ung dung");
+            Console.Write("\n7. Thanh tich cua hang vot");
+            Console.Write("\n8. Thoat ung dung");
             Console.Write("\nXin chao! Vui long chon chuc nang de tiep tuc (1/2/3...): ");
             string input = Console.ReadLine();
             int option;
@@ -65,6 +66,10 @@ using (SqlConnection connection = new SqlConnection(connectionString))
                         break;
 
                     case 7:
+                        BrandsTotalWins(connection);
+                        break;
+
+                    case 8:
                         Console.WriteLine("Cam on va hen gap lai!");
                         return;
 
@@ -254,6 +259,31 @@ static void Top3Players (SqlConnection connection)
             {
                 Console.WriteLine("Hien tai CLB chua co tay vot nao, hoac danh sach dang trong!");
             }
+        }
+    }
+}
+
+// 7. TOTAL WINS OF BRAND (Thành tích theo hãng vợt)
+static void BrandsTotalWins(SqlConnection connection)
+{
+    Console.WriteLine("Hang vot ban muon thong ke: ");
+    string? targetBrand = Console.ReadLine();
+
+    Console.WriteLine("\n--- TONG THANH TICH CUA HANG VOT ---");
+    string topQuery = "SELECT SUM(MatchesWon) FROM BadmintonPlayers WHERE RacketBrand = @Brand";
+    using (SqlCommand topCommand = new SqlCommand(topQuery, connection))
+    {
+        topCommand.Parameters.AddWithValue("@Brand", targetBrand);
+        object result = topCommand.ExecuteScalar();
+
+        if(result != DBNull.Value)
+        {
+            int totalWins = Convert.ToInt32(result);
+            Console.WriteLine($"Hang {targetBrand} da thang tong cong {result} tran!");
+        }
+        else
+        {
+            Console.WriteLine($"Khong tim thay tay vot nao xai hang {targetBrand}!");
         }
     }
 }
