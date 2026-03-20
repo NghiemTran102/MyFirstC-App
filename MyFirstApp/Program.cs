@@ -17,8 +17,9 @@ using (SqlConnection connection = new SqlConnection(connectionString))
             Console.Write("\n2. Cap nhat thong tin tay vot");
             Console.Write("\n3. Danh sach tay vot");
             Console.Write("\n4. Xoa tay vot");
-            Console.Write("\n5. Thoat ung dung");
-            Console.WriteLine("\nXin chao! Vui long chon chuc nang de tiep tuc (1/2/3/4/5): ");
+            Console.Write("\n5. Tim kiem tay vot");
+            Console.Write("\n6. Thoat ung dung");
+            Console.Write("\nXin chao! Vui long chon chuc nang de tiep tuc (1/2/3...): ");
             string input = Console.ReadLine();
             int option;
             if (int.TryParse(input, out option))
@@ -55,6 +56,10 @@ using (SqlConnection connection = new SqlConnection(connectionString))
                         break;
 
                     case 5:
+                        PlayerLookUp(connection);
+                        break;
+
+                    case 6:
                         Console.WriteLine("Cam on va hen gap lai!");
                         return;
 
@@ -184,6 +189,41 @@ static void PlayerDelete(SqlConnection connection)
         else
         {
             Console.WriteLine("Khong tim thay ten de xoa!");
+        }
+    }
+}
+
+// 5. LOOK UP (Tìm kiếm tay vợt)
+static void PlayerLookUp(SqlConnection connection)
+{
+    Console.WriteLine("\n--- TIM  KIEM TAY VOT ---");
+    Console.WriteLine("Nhap ten tay vot ban muon tim: ");
+    string? targetName = Console.ReadLine();
+
+    string searchQuery = "SELECT PlayerName, RacketBrand, MatchesWon FROM BadmintonPlayers WHERE PlayerName LIKE @Name";
+    using (SqlCommand searcheCommand = new SqlCommand(searchQuery, connection))
+    {
+        searcheCommand.Parameters.AddWithValue("@Name", "%" + targetName + "%");
+
+        using (SqlDataReader reader = searcheCommand.ExecuteReader())
+        {
+            if (reader.HasRows)
+            {
+                while (reader.Read())
+                {
+
+                    {
+                        string name = reader.GetString(0);
+                        string brand = reader.GetString(1);
+                        int wins = reader.GetInt32(2);
+                        Console.WriteLine($"Tay vot {name} dang dung vot hang {brand}, da thang {wins} tran!");
+                    }
+                }
+            } 
+            else
+            {
+                Console.WriteLine($"Khong tim thay ai co ten {targetName} trong he thong!");
+            }
         }
     }
 }
